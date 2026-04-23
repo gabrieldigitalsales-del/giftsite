@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import PageHeader from '@/components/shared/PageHeader';
@@ -7,21 +7,23 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Phone, Mail, MapPin, Clock, Instagram, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
-import { PHONE, EMAIL, INSTAGRAM, ADDRESS, HOURS, WHATSAPP_LINK, getWhatsAppLink } from '@/lib/constants';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-
-const contactInfo = [
-  { icon: Phone, label: "WhatsApp / Telefone", value: PHONE, href: WHATSAPP_LINK },
-  { icon: Mail, label: "E-mail", value: EMAIL, href: `mailto:${EMAIL}` },
-  { icon: MapPin, label: "Endereço", value: ADDRESS },
-  { icon: Clock, label: "Horário de Atendimento", value: HOURS },
-  { icon: Instagram, label: "Instagram", value: "@giftexcellence_ofc", href: INSTAGRAM },
-];
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 export default function Contact() {
+  const { settings } = useSiteSettings();
+  const contactInfo = useMemo(() => [
+    { icon: Phone, label: 'WhatsApp / Telefone', value: settings.phone, href: settings.whatsappLink },
+    { icon: Mail, label: 'E-mail', value: settings.email, href: `mailto:${settings.email}` },
+    { icon: MapPin, label: 'Endereço', value: settings.address },
+    { icon: Clock, label: 'Horário de Atendimento', value: settings.hours },
+    { icon: Instagram, label: 'Instagram', value: settings.instagramHandle, href: settings.instagram },
+  ], [settings]);
+
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+
   const mutation = useMutation({
     mutationFn: (payload) => base44.entities.ContactMessage.create(payload),
     onSuccess: () => {
@@ -33,49 +35,51 @@ export default function Contact() {
     },
   });
 
+  const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) {
-      toast.error('Preencha os campos obrigatórios');
-      return;
-    }
     mutation.mutate(form);
   };
 
-  const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
-
   return (
     <div>
-      <PageHeader title="ENTRE EM" highlight="CONTATO" subtitle="Estamos prontos para atender você" />
+      <PageHeader title="FALE COM A" highlight="GIFT EXCELLENCE" subtitle="Estamos prontos para atender você com excelência" />
 
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-16 md:py-20 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid lg:grid-cols-5 gap-12">
-            {/* Contact info */}
+          <div className="grid lg:grid-cols-5 gap-10 items-start">
             <div className="lg:col-span-2 space-y-6">
-              <h2 className="font-heading text-3xl text-secondary">INFORMAÇÕES DE <span className="text-primary">CONTATO</span></h2>
-              <p className="text-muted-foreground">Entre em contato conosco por qualquer um dos canais abaixo. Estamos prontos para atender você!</p>
-              
+              <div>
+                <span className="text-primary font-semibold text-sm uppercase tracking-widest">Contato</span>
+                <h2 className="font-heading text-4xl md:text-5xl text-secondary mt-2 leading-tight">
+                  VAMOS <span className="text-primary">CONVERSAR</span>
+                </h2>
+                <p className="text-muted-foreground mt-4 leading-relaxed">
+                  Entre em contato para tirar dúvidas, solicitar orçamento ou falar com nossa equipe técnica.
+                </p>
+              </div>
+
               <div className="space-y-4">
                 {contactInfo.map((item, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+                  <motion.div key={item.label} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.08 }}>
                     {item.href ? (
-                      <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className="flex items-start gap-4 p-4 rounded-lg hover:bg-muted transition-colors group">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary transition-all">
+                      <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-lg transition-all group">
+                        <div className="w-11 h-11 rounded-full bg-primary/10 group-hover:bg-primary transition-all flex items-center justify-center flex-shrink-0">
                           <item.icon className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" />
                         </div>
                         <div>
-                          <p className="text-xs text-muted-foreground">{item.label}</p>
+                          <p className="text-sm text-muted-foreground">{item.label}</p>
                           <p className="font-semibold text-secondary">{item.value}</p>
                         </div>
                       </a>
                     ) : (
-                      <div className="flex items-start gap-4 p-4">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <div className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border">
+                        <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                           <item.icon className="w-5 h-5 text-primary" />
                         </div>
                         <div>
-                          <p className="text-xs text-muted-foreground">{item.label}</p>
+                          <p className="text-sm text-muted-foreground">{item.label}</p>
                           <p className="font-semibold text-secondary">{item.value}</p>
                         </div>
                       </div>
@@ -84,14 +88,13 @@ export default function Contact() {
                 ))}
               </div>
 
-              <a href={getWhatsAppLink("Olá! Gostaria de mais informações.")} target="_blank" rel="noopener noreferrer">
+              <a href={settings.getWhatsAppLink('Olá! Gostaria de mais informações.')} target="_blank" rel="noopener noreferrer">
                 <Button size="lg" className="bg-green-500 hover:bg-green-600 text-white font-bold w-full mt-4">
                   <MessageCircle className="mr-2 w-5 h-5" /> Falar no WhatsApp
                 </Button>
               </a>
             </div>
 
-            {/* Form */}
             <div className="lg:col-span-3">
               {submitted ? (
                 <div className="bg-card rounded-xl border border-border p-12 text-center">
@@ -146,7 +149,6 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Map */}
           <div className="mt-16 rounded-xl overflow-hidden border border-border shadow-lg">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d240098.18021399858!2d-44.09453964999999!3d-19.9024025!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa690cacacf2c33%3A0x5b35fdc997a7212d!2sBelo%20Horizonte%2C%20MG!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"

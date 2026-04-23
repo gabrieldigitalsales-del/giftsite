@@ -1,114 +1,97 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import { Menu, X, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { WHATSAPP_LINK, PHONE } from '@/lib/constants';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 const navLinks = [
   { label: 'Início', path: '/' },
   { label: 'Sobre', path: '/sobre' },
-  { label: 'Máquinas', path: '/catalogo' },
+  { label: 'Catálogo', path: '/catalogo' },
   { label: 'Serviços', path: '/servicos' },
-  { label: 'Assistência', path: '/assistencia-tecnica' },
+  { label: 'Assistência Técnica', path: '/assistencia-tecnica' },
   { label: 'Galeria', path: '/galeria' },
   { label: 'Contato', path: '/contato' },
 ];
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => { setIsOpen(false); }, [location]);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { settings } = useSiteSettings();
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-transparent'}`}>
-      {/* Top bar */}
-      <div className={`transition-all duration-300 ${scrolled ? 'h-0 overflow-hidden opacity-0' : 'h-auto opacity-100'} bg-secondary text-secondary-foreground`}>
-        <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-4">
-            <a href={`tel:${PHONE}`} className="flex items-center gap-1 hover:text-primary transition-colors">
-              <Phone className="w-3 h-3" /> {PHONE}
+    <header className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border">
+      <div className="bg-secondary text-secondary-foreground hidden md:block">
+        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-6">
+            <a href={`tel:${settings.phone}`} className="flex items-center gap-1 hover:text-primary transition-colors">
+              <Phone className="w-3 h-3" /> {settings.phone}
             </a>
           </div>
-          <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors font-medium">
-            Fale pelo WhatsApp
+          <a href={settings.whatsappLink} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors font-medium">
+            Atendimento via WhatsApp
           </a>
         </div>
       </div>
 
-      {/* Main nav */}
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          <Link to="/" className="flex items-center gap-2">
-            <span className={`font-heading text-2xl md:text-3xl tracking-wide transition-colors ${scrolled ? 'text-secondary' : 'text-white'}`}>
-              GIFT <span className="text-primary">EXCELLENCE</span>
-            </span>
-          </Link>
-
-          {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
-                  location.pathname === link.path
-                    ? 'text-primary'
-                    : scrolled ? 'text-foreground/70 hover:text-primary' : 'text-white/80 hover:text-white'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link to="/orcamento">
-              <Button className="ml-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-5">
-                Solicitar Orçamento
-              </Button>
-            </Link>
+      <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3">
+          <img src="/logo-gift.jpeg" alt="Gift Excellence" className="h-12 w-auto" />
+          <div>
+            <p className="font-heading text-3xl leading-none text-secondary">GIFT</p>
+            <p className="font-heading text-2xl leading-none text-primary -mt-1">EXCELLENCE</p>
           </div>
+        </Link>
 
-          {/* Mobile toggle */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className={`lg:hidden p-2 ${scrolled ? 'text-foreground' : 'text-white'}`}
-          >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+        <nav className="hidden lg:flex items-center gap-8">
+          {navLinks.map((link) => (
+            <NavLink
+              key={link.path}
+              to={link.path}
+              className={({ isActive }) =>
+                `text-sm font-medium uppercase tracking-wide transition-colors ${isActive ? 'text-primary' : 'text-secondary hover:text-primary'}`
+              }
+            >
+              {link.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="hidden lg:block">
+          <Link to="/orcamento">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6">
+              Solicitar Orçamento
+            </Button>
+          </Link>
         </div>
+
+        <button className="lg:hidden text-secondary" onClick={() => setMobileOpen((v) => !v)} aria-label="Abrir menu">
+          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </div>
 
-      {/* Mobile menu */}
       <AnimatePresence>
-        {isOpen && (
+        {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white border-t shadow-xl"
+            className="lg:hidden border-t border-border bg-background"
           >
-            <div className="px-4 py-4 space-y-1">
+            <div className="px-4 py-4 flex flex-col gap-4">
               {navLinks.map((link) => (
-                <Link
+                <NavLink
                   key={link.path}
                   to={link.path}
-                  className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    location.pathname === link.path
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-foreground/70 hover:bg-muted'
-                  }`}
+                  onClick={() => setMobileOpen(false)}
+                  className={({ isActive }) =>
+                    `text-sm font-medium uppercase tracking-wide transition-colors ${isActive ? 'text-primary' : 'text-secondary hover:text-primary'}`
+                  }
                 >
                   {link.label}
-                </Link>
+                </NavLink>
               ))}
-              <Link to="/orcamento" className="block pt-2">
+              <Link to="/orcamento" onClick={() => setMobileOpen(false)}>
                 <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
                   Solicitar Orçamento
                 </Button>
@@ -117,6 +100,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </header>
   );
 }

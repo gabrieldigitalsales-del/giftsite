@@ -171,6 +171,11 @@ insert into storage.buckets (id, name, public)
 values ('gift-excellence-media', 'gift-excellence-media', true)
 on conflict (id) do nothing;
 
+drop policy if exists "gift media public read" on storage.objects;
+drop policy if exists "gift media auth upload" on storage.objects;
+drop policy if exists "gift media auth update" on storage.objects;
+drop policy if exists "gift media auth delete" on storage.objects;
+
 create policy "gift media public read"
 on storage.objects for select
 using (bucket_id = 'gift-excellence-media');

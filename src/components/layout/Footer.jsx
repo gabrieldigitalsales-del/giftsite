@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Clock, Instagram } from 'lucide-react';
-import { PHONE, EMAIL, INSTAGRAM, ADDRESS, HOURS, WHATSAPP_LINK } from '@/lib/constants';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 const footerLinks = [
   { label: 'Início', path: '/' },
@@ -15,11 +15,12 @@ const footerLinks = [
 ];
 
 export default function Footer() {
+  const { settings } = useSiteSettings();
+
   return (
     <footer className="bg-secondary text-secondary-foreground">
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Brand */}
           <div>
             <h3 className="font-heading text-3xl tracking-wide mb-4">
               GIFT <span className="text-primary">EXCELLENCE</span>
@@ -29,7 +30,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Links */}
           <div>
             <h4 className="font-semibold text-sm uppercase tracking-wider mb-4 text-primary">Navegação</h4>
             <ul className="space-y-2">
@@ -43,35 +43,33 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
             <h4 className="font-semibold text-sm uppercase tracking-wider mb-4 text-primary">Contato</h4>
             <ul className="space-y-3">
               <li>
-                <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-secondary-foreground/60 hover:text-primary transition-colors">
-                  <Phone className="w-4 h-4 flex-shrink-0" /> {PHONE}
+                <a href={settings.whatsappLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-secondary-foreground/60 hover:text-primary transition-colors">
+                  <Phone className="w-4 h-4 flex-shrink-0" /> {settings.phone}
                 </a>
               </li>
               <li>
-                <a href={`mailto:${EMAIL}`} className="flex items-center gap-2 text-sm text-secondary-foreground/60 hover:text-primary transition-colors">
-                  <Mail className="w-4 h-4 flex-shrink-0" /> {EMAIL}
+                <a href={`mailto:${settings.email}`} className="flex items-center gap-2 text-sm text-secondary-foreground/60 hover:text-primary transition-colors">
+                  <Mail className="w-4 h-4 flex-shrink-0" /> {settings.email}
                 </a>
               </li>
               <li className="flex items-start gap-2 text-sm text-secondary-foreground/60">
-                <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" /> {ADDRESS}
+                <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" /> {settings.address}
               </li>
               <li className="flex items-start gap-2 text-sm text-secondary-foreground/60">
-                <Clock className="w-4 h-4 flex-shrink-0 mt-0.5" /> {HOURS}
+                <Clock className="w-4 h-4 flex-shrink-0 mt-0.5" /> {settings.hours}
               </li>
             </ul>
           </div>
 
-          {/* Social */}
           <div>
             <h4 className="font-semibold text-sm uppercase tracking-wider mb-4 text-primary">Redes Sociais</h4>
             <div className="flex items-center gap-3">
               <a
-                href={INSTAGRAM}
+                href={settings.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-secondary-foreground/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all"
@@ -79,7 +77,7 @@ export default function Footer() {
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href={WHATSAPP_LINK}
+                href={settings.whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-secondary-foreground/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all"
@@ -96,7 +94,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom bar */}
       <div className="border-t border-secondary-foreground/10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-secondary-foreground/40">
           <p>© {new Date().getFullYear()} Gift Excellence. Todos os direitos reservados.</p>

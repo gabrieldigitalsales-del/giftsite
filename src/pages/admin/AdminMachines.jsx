@@ -42,26 +42,54 @@ export default function AdminMachines() {
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['machines'] }); toast.success('Máquina removida!'); },
   });
 
+  const slugify = (value = '') => value
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+
   const handleSave = () => {
-    if (!editing.name) { toast.error('Nome é obrigatório'); return; }
+    if (!editing?.name?.trim()) { toast.error('Nome é obrigatório'); return; }
+
+    const prepared = {
+      ...editing,
+      slug: slugify(editing.slug || editing.name),
+      images: Array.isArray(editing.images) ? editing.images.filter(Boolean) : [],
+      order: Number(editing.order || 0),
+      active: editing.active !== false,
+      featured: Boolean(editing.featured),
+    };
+
     if (editing.id) {
-      const { id, created_date, updated_date, created_by, ...data } = editing;
-      updateMut.mutate({ id, data });
+      const { id, created_date, updated_date, created_by, ...data } = prepared;
+      updateMut.mutate({ id, data }, {
+        onError: (error) => toast.error(error.message || 'Não foi possível atualizar a máquina.'),
+      });
     } else {
-      createMut.mutate(editing);
+      createMut.mutate(prepared, {
+        onError: (error) => toast.error(error.message || 'Não foi possível criar a máquina.'),
+      });
     }
   };
 
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setUploading(true);
-    toast.info('Enviando imagem...');
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    setEditing(prev => prev ? ({ ...prev, images: [...(prev.images || []), file_url] }) : prev);
-    setUploading(false);
-    toast.success('Imagem adicionada!');
-    if (fileInputRef.current) fileInputRef.current.value = '';
+    try {
+      setUploading(true);
+      toast.info('Enviando imagem...');
+      const { file_url } = await base44.integrations.Core.UploadFile({ file, folder: 'machines' });
+      setEditing(prev => prev ? ({ ...prev, images: [...(prev.images || []), file_url] }) : prev);
+      toast.success('Imagem adicionada!');
+    } catch (error) {
+      toast.error(error.message || 'Falha ao enviar imagem. Verifique o bucket e as policies do Storage.');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const removeImage = (idx) => {

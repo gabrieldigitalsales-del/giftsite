@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Phone, Mail, MapPin, Clock, Instagram } from 'lucide-react';
-import { PHONE, EMAIL, INSTAGRAM, ADDRESS, HOURS, WHATSAPP_LINK } from '@/lib/constants';
 import { motion } from 'framer-motion';
-
-const contactItems = [
-  { icon: Phone, label: "WhatsApp / Telefone", value: PHONE, href: WHATSAPP_LINK },
-  { icon: Mail, label: "E-mail", value: EMAIL, href: `mailto:${EMAIL}` },
-  { icon: MapPin, label: "Endereço", value: ADDRESS },
-  { icon: Clock, label: "Horário", value: HOURS },
-  { icon: Instagram, label: "Instagram", value: "@giftexcellence_ofc", href: INSTAGRAM },
-];
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 export default function QuickContact() {
+  const { settings } = useSiteSettings();
+
+  const contactItems = useMemo(() => [
+    { icon: Phone, label: 'WhatsApp / Telefone', value: settings.phone, href: settings.whatsappLink },
+    { icon: Mail, label: 'E-mail', value: settings.email, href: `mailto:${settings.email}` },
+    { icon: MapPin, label: 'Endereço', value: settings.address },
+    { icon: Clock, label: 'Horário', value: settings.hours },
+    { icon: Instagram, label: 'Instagram', value: settings.instagramHandle, href: settings.instagram },
+  ], [settings]);
+
   return (
     <section className="py-20 md:py-28 bg-background">
       <div className="max-w-7xl mx-auto px-4">
