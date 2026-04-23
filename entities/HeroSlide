@@ -1,0 +1,29 @@
+{
+  "name": "HeroSlide",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "T\u00edtulo principal"
+    },
+    "subtitle": {
+      "type": "string",
+      "description": "Subt\u00edtulo comercial"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Imagem de fundo"
+    },
+    "order": {
+      "type": "number",
+      "default": 0
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title"
+  ]
+}
