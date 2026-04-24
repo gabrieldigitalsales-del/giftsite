@@ -1,12 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { appClient } from '@/api/appClient';
 import PageHeader from '@/components/shared/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Phone, Mail, MapPin, Clock, Instagram, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Instagram, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { useSiteSettings } from '@/hooks/use-site-settings';
@@ -33,45 +31,40 @@ export default function Contact() {
     message: '',
   });
 
-  const [submitted, setSubmitted] = useState(false);
-
-  const sendContactEmail = async (payload) => {
-    const response = await fetch('/api/send-contact-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      throw new Error(data?.error || 'Não foi possível enviar o e-mail.');
-    }
-
-    return data;
-  };
-
-  const mutation = useMutation({
-    mutationFn: async (payload) => {
-      await appClient.entities.ContactMessage.create(payload);
-      await sendContactEmail(payload);
-      return true;
-    },
-    onSuccess: () => {
-      setSubmitted(true);
-      toast.success('Mensagem enviada com sucesso!');
-    },
-    onError: (error) => {
-      toast.error(error.message || 'Não foi possível enviar a mensagem.');
-    },
-  });
-
   const handleChange = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const resetForm = () => {
-    setSubmitted(false);
+  const buildWhatsAppMessage = () => {
+    return [
+      'Olá! Recebi um contato pelo site GIFT EXCELLENCE.',
+      '',
+      `Nome: ${form.name || '-'}`,
+      `E-mail: ${form.email || '-'}`,
+      `Telefone: ${form.phone || '-'}`,
+      `Assunto: ${form.subject || '-'}`,
+      'Mensagem:',
+      form.message || '-',
+    ].join('\n');
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!form.name || !form.email || !form.message) {
+      toast.error('Preencha nome, e-mail e mensagem.');
+      return;
+    }
+
+    const message = buildWhatsAppMessage();
+    const whatsappUrl = settings?.getWhatsAppLink
+      ? settings.getWhatsAppLink(message)
+      : `https://wa.me/${String(settings?.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+
+    toast.success('Abrindo WhatsApp com a mensagem preenchida.');
+
     setForm({
       name: '',
       email: '',
@@ -79,11 +72,6 @@ export default function Contact() {
       subject: '',
       message: '',
     });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    mutation.mutate(form);
   };
 
   return (
@@ -150,103 +138,77 @@ export default function Contact() {
             </div>
 
             <div className="lg:col-span-3">
-              {submitted ? (
-                <div className="bg-card rounded-xl border border-border p-12 text-center">
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
-                    <div className="w-20 h-20 mx-auto rounded-full bg-green-100 flex items-center justify-center mb-6">
-                      <CheckCircle className="w-10 h-10 text-green-600" />
-                    </div>
-                  </motion.div>
+              <motion.form
+                onSubmit={handleSubmit}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-card rounded-xl border border-border p-8 shadow-lg space-y-5"
+              >
+                <h3 className="font-heading text-2xl text-secondary mb-2">ENVIE SUA MENSAGEM</h3>
 
-                  <h3 className="font-heading text-2xl text-secondary mb-3">MENSAGEM ENVIADA!</h3>
-                  <p className="text-muted-foreground mb-6">Obrigado pelo contato. Retornaremos em breve.</p>
-
-                  <Button onClick={resetForm}>Enviar nova mensagem</Button>
-                </div>
-              ) : (
-                <motion.form
-                  onSubmit={handleSubmit}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-card rounded-xl border border-border p-8 shadow-lg space-y-5"
-                >
-                  <h3 className="font-heading text-2xl text-secondary mb-2">ENVIE SUA MENSAGEM</h3>
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="name">Nome *</Label>
-                      <Input
-                        id="name"
-                        value={form.name}
-                        onChange={(e) => handleChange('name', e.target.value)}
-                        placeholder="Seu nome"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="email">E-mail *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={form.email}
-                        onChange={(e) => handleChange('email', e.target.value)}
-                        placeholder="seu@email.com"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="phone">Telefone</Label>
-                      <Input
-                        id="phone"
-                        value={form.phone}
-                        onChange={(e) => handleChange('phone', e.target.value)}
-                        placeholder="(31) 9 0000-0000"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="subject">Assunto</Label>
-                      <Input
-                        id="subject"
-                        value={form.subject}
-                        onChange={(e) => handleChange('subject', e.target.value)}
-                        placeholder="Assunto da mensagem"
-                      />
-                    </div>
-                  </div>
-
+                <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="message">Mensagem *</Label>
-                    <Textarea
-                      id="message"
-                      value={form.message}
-                      onChange={(e) => handleChange('message', e.target.value)}
-                      placeholder="Escreva sua mensagem..."
-                      rows={5}
+                    <Label htmlFor="name">Nome *</Label>
+                    <Input
+                      id="name"
+                      value={form.name}
+                      onChange={(e) => handleChange('name', e.target.value)}
+                      placeholder="Seu nome"
                       required
                     />
                   </div>
 
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
-                    disabled={mutation.isPending}
-                  >
-                    {mutation.isPending ? (
-                      <>
-                        <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Enviando...
-                      </>
-                    ) : (
-                      'Enviar Mensagem'
-                    )}
-                  </Button>
-                </motion.form>
-              )}
+                  <div>
+                    <Label htmlFor="email">E-mail *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => handleChange('email', e.target.value)}
+                      placeholder="seu@email.com"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="phone">Telefone</Label>
+                    <Input
+                      id="phone"
+                      value={form.phone}
+                      onChange={(e) => handleChange('phone', e.target.value)}
+                      placeholder="(31) 9 0000-0000"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="subject">Assunto</Label>
+                    <Input
+                      id="subject"
+                      value={form.subject}
+                      onChange={(e) => handleChange('subject', e.target.value)}
+                      placeholder="Assunto da mensagem"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="message">Mensagem *</Label>
+                  <Textarea
+                    id="message"
+                    value={form.message}
+                    onChange={(e) => handleChange('message', e.target.value)}
+                    placeholder="Escreva sua mensagem..."
+                    rows={5}
+                    required
+                  />
+                </div>
+
+                <Button type="submit" size="lg" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+                  Enviar pelo WhatsApp
+                </Button>
+              </motion.form>
             </div>
           </div>
 
