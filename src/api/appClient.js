@@ -46,9 +46,11 @@ const createEntityApi = (entityName) => {
     },
     async create(payload) {
       if (!isSupabaseConfigured) throw new Error('Supabase is not configured.');
-      const { data, error } = await supabase.from(table).insert(payload).select().single();
+
+      const { error } = await supabase.from(table).insert(payload);
       if (error) throw error;
-      return normalizeRecord(data);
+
+      return normalizeRecord(payload);
     },
     async update(id, payload) {
       if (!isSupabaseConfigured) throw new Error('Supabase is not configured.');

@@ -28,6 +28,9 @@ export default function QuoteRequest() {
       setSubmitted(true);
       toast.success('Pedido de orçamento enviado com sucesso!');
     },
+    onError: (error) => {
+      toast.error(error.message || 'Não foi possível enviar o pedido de orçamento.');
+    },
   });
 
   const handleSubmit = (e) => {

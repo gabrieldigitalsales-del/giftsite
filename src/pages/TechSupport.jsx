@@ -20,6 +20,9 @@ export default function TechSupport() {
       setSubmitted(true);
       toast.success('Solicitação enviada com sucesso!');
     },
+    onError: (error) => {
+      toast.error(error.message || 'Não foi possível enviar a solicitação de assistência.');
+    },
   });
 
   const handleSubmit = (e) => {
