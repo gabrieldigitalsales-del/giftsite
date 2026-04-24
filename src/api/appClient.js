@@ -1,4 +1,4 @@
-import { supabase, SUPABASE_STORAGE_BUCKET } from '@/lib/supabase';
+import { supabase, SUPABASE_STORAGE_BUCKET, isSupabaseConfigured } from '@/lib/supabase';
 
 const tableMap = {
   Machine: 'gift_machines',
@@ -37,6 +37,7 @@ const createEntityApi = (entityName) => {
 
   return {
     async list(orderBy) {
+      if (!isSupabaseConfigured) return [];
       let query = supabase.from(table).select('*');
       query = applyOrder(query, orderBy);
       const { data, error } = await query;
@@ -44,16 +45,19 @@ const createEntityApi = (entityName) => {
       return normalizeRecords(data);
     },
     async create(payload) {
+      if (!isSupabaseConfigured) throw new Error('Supabase is not configured.');
       const { data, error } = await supabase.from(table).insert(payload).select().single();
       if (error) throw error;
       return normalizeRecord(data);
     },
     async update(id, payload) {
+      if (!isSupabaseConfigured) throw new Error('Supabase is not configured.');
       const { data, error } = await supabase.from(table).update(payload).eq('id', id).select().single();
       if (error) throw error;
       return normalizeRecord(data);
     },
     async delete(id) {
+      if (!isSupabaseConfigured) throw new Error('Supabase is not configured.');
       const { error } = await supabase.from(table).delete().eq('id', id);
       if (error) throw error;
       return { success: true };
@@ -75,6 +79,7 @@ export const appClient = {
   integrations: {
     Core: {
       async UploadFile({ file, folder = 'uploads' }) {
+        if (!isSupabaseConfigured) throw new Error('Supabase is not configured.');
         const extension = file.name.split('.').pop();
         const filename = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`;
         const { error: uploadError } = await supabase.storage.from(SUPABASE_STORAGE_BUCKET).upload(filename, file, {
@@ -90,17 +95,20 @@ export const appClient = {
   },
   auth: {
     async me() {
+      if (!isSupabaseConfigured) throw new Error('Supabase is not configured.');
       const { data, error } = await supabase.auth.getUser();
       if (error) throw error;
       if (!data?.user) throw new Error('Not authenticated');
       return data.user;
     },
     async signIn(email, password) {
+      if (!isSupabaseConfigured) throw new Error('Supabase is not configured.');
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       return data;
     },
     async logout() {
+      if (!isSupabaseConfigured) return true;
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       return true;

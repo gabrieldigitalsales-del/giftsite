@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 const AuthContext = createContext();
 
@@ -17,6 +17,12 @@ export const AuthProvider = ({ children }) => {
 
     const bootstrap = async () => {
       try {
+        if (!isSupabaseConfigured) {
+          if (!mounted) return;
+          setUser(null);
+          setIsAuthenticated(false);
+          return;
+        }
         const { data, error } = await supabase.auth.getSession();
         if (error) throw error;
         const currentUser = data.session?.user ?? null;
@@ -35,6 +41,12 @@ export const AuthProvider = ({ children }) => {
 
     bootstrap();
 
+    if (!isSupabaseConfigured) {
+      return () => {
+        mounted = false;
+      };
+    }
+
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!mounted) return;
       setUser(session?.user ?? null);
@@ -51,6 +63,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const logout = async () => {
+    if (!isSupabaseConfigured) return;
     await supabase.auth.signOut();
   };
 
@@ -60,6 +73,12 @@ export const AuthProvider = ({ children }) => {
 
   const checkUserAuth = async () => {
     try {
+      if (!isSupabaseConfigured) {
+        setUser(null);
+        setIsAuthenticated(false);
+        setAuthError(null);
+        return;
+      }
       setIsLoadingAuth(true);
       const { data, error } = await supabase.auth.getSession();
       if (error) throw error;

@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import {
   PHONE as DEFAULT_PHONE,
   EMAIL as DEFAULT_EMAIL,
@@ -28,6 +28,7 @@ const toInstagramHandle = (url) => {
 const digitsOnly = (value = '') => value.replace(/\D/g, '');
 
 async function fetchSiteSettings() {
+  if (!isSupabaseConfigured) return [];
   const { data, error } = await supabase
     .from('gift_site_settings')
     .select('key, value, updated_at')
@@ -57,6 +58,7 @@ export function useSiteSettings() {
   });
 
   useEffect(() => {
+    if (!isSupabaseConfigured) return undefined;
     const channel = supabase
       .channel('gift-site-settings-live')
       .on(

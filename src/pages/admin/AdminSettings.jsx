@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Save } from 'lucide-react';
 import { toast } from 'sonner';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 const settingsConfig = [
   { section: 'contato', label: 'Contato', fields: [
@@ -28,6 +28,7 @@ const settingsConfig = [
 ];
 
 async function fetchSettings() {
+  if (!isSupabaseConfigured) return [];
   const { data, error } = await supabase
     .from('gift_site_settings')
     .select('*')
@@ -56,6 +57,7 @@ export default function AdminSettings() {
 
   const saveMut = useMutation({
     mutationFn: async (payload) => {
+      if (!isSupabaseConfigured) throw new Error('Supabase is not configured.');
       const { data, error } = await supabase
         .from('gift_site_settings')
         .upsert(payload, { onConflict: 'key' })
