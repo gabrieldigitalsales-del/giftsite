@@ -13,19 +13,50 @@ import { useSiteSettings } from '@/hooks/use-site-settings';
 
 export default function Contact() {
   const { settings } = useSiteSettings();
-  const contactInfo = useMemo(() => [
-    { icon: Phone, label: 'WhatsApp / Telefone', value: settings.phone, href: settings.whatsappLink },
-    { icon: Mail, label: 'E-mail', value: settings.email, href: `mailto:${settings.email}` },
-    { icon: MapPin, label: 'Endereço', value: settings.address },
-    { icon: Clock, label: 'Horário de Atendimento', value: settings.hours },
-    { icon: Instagram, label: 'Instagram', value: settings.instagramHandle, href: settings.instagram },
-  ], [settings]);
 
-  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
+  const contactInfo = useMemo(
+    () => [
+      { icon: Phone, label: 'WhatsApp / Telefone', value: settings.phone, href: settings.whatsappLink },
+      { icon: Mail, label: 'E-mail', value: settings.email, href: `mailto:${settings.email}` },
+      { icon: MapPin, label: 'Endereço', value: settings.address },
+      { icon: Clock, label: 'Horário de Atendimento', value: settings.hours },
+      { icon: Instagram, label: 'Instagram', value: settings.instagramHandle, href: settings.instagram },
+    ],
+    [settings]
+  );
+
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: '',
+  });
+
   const [submitted, setSubmitted] = useState(false);
 
+  const sendContactEmail = async (payload) => {
+    const response = await fetch('/api/send-contact-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data?.error || 'Não foi possível enviar o e-mail.');
+    }
+
+    return data;
+  };
+
   const mutation = useMutation({
-    mutationFn: (payload) => appClient.entities.ContactMessage.create(payload),
+    mutationFn: async (payload) => {
+      await appClient.entities.ContactMessage.create(payload);
+      await sendContactEmail(payload);
+      return true;
+    },
     onSuccess: () => {
       setSubmitted(true);
       toast.success('Mensagem enviada com sucesso!');
@@ -35,7 +66,20 @@ export default function Contact() {
     },
   });
 
-  const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
+  const handleChange = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const resetForm = () => {
+    setSubmitted(false);
+    setForm({
+      name: '',
+      email: '',
+      phone: '',
+      subject: '',
+      message: '',
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -62,9 +106,19 @@ export default function Contact() {
 
               <div className="space-y-4">
                 {contactInfo.map((item, i) => (
-                  <motion.div key={item.label} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.08 }}>
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.08 }}
+                  >
                     {item.href ? (
-                      <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-lg transition-all group">
+                      <a
+                        href={item.href}
+                        target={item.href.startsWith('http') ? '_blank' : undefined}
+                        rel="noopener noreferrer"
+                        className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-lg transition-all group"
+                      >
                         <div className="w-11 h-11 rounded-full bg-primary/10 group-hover:bg-primary transition-all flex items-center justify-center flex-shrink-0">
                           <item.icon className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" />
                         </div>
@@ -103,11 +157,11 @@ export default function Contact() {
                       <CheckCircle className="w-10 h-10 text-green-600" />
                     </div>
                   </motion.div>
+
                   <h3 className="font-heading text-2xl text-secondary mb-3">MENSAGEM ENVIADA!</h3>
                   <p className="text-muted-foreground mb-6">Obrigado pelo contato. Retornaremos em breve.</p>
-                  <Button onClick={() => { setSubmitted(false); setForm({ name: '', email: '', phone: '', subject: '', message: '' }); }}>
-                    Enviar nova mensagem
-                  </Button>
+
+                  <Button onClick={resetForm}>Enviar nova mensagem</Button>
                 </div>
               ) : (
                 <motion.form
@@ -117,32 +171,79 @@ export default function Contact() {
                   className="bg-card rounded-xl border border-border p-8 shadow-lg space-y-5"
                 >
                   <h3 className="font-heading text-2xl text-secondary mb-2">ENVIE SUA MENSAGEM</h3>
+
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="name">Nome *</Label>
-                      <Input id="name" value={form.name} onChange={(e) => handleChange('name', e.target.value)} placeholder="Seu nome" required />
+                      <Input
+                        id="name"
+                        value={form.name}
+                        onChange={(e) => handleChange('name', e.target.value)}
+                        placeholder="Seu nome"
+                        required
+                      />
                     </div>
+
                     <div>
                       <Label htmlFor="email">E-mail *</Label>
-                      <Input id="email" type="email" value={form.email} onChange={(e) => handleChange('email', e.target.value)} placeholder="seu@email.com" required />
+                      <Input
+                        id="email"
+                        type="email"
+                        value={form.email}
+                        onChange={(e) => handleChange('email', e.target.value)}
+                        placeholder="seu@email.com"
+                        required
+                      />
                     </div>
                   </div>
+
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="phone">Telefone</Label>
-                      <Input id="phone" value={form.phone} onChange={(e) => handleChange('phone', e.target.value)} placeholder="(31) 9 0000-0000" />
+                      <Input
+                        id="phone"
+                        value={form.phone}
+                        onChange={(e) => handleChange('phone', e.target.value)}
+                        placeholder="(31) 9 0000-0000"
+                      />
                     </div>
+
                     <div>
                       <Label htmlFor="subject">Assunto</Label>
-                      <Input id="subject" value={form.subject} onChange={(e) => handleChange('subject', e.target.value)} placeholder="Assunto da mensagem" />
+                      <Input
+                        id="subject"
+                        value={form.subject}
+                        onChange={(e) => handleChange('subject', e.target.value)}
+                        placeholder="Assunto da mensagem"
+                      />
                     </div>
                   </div>
+
                   <div>
                     <Label htmlFor="message">Mensagem *</Label>
-                    <Textarea id="message" value={form.message} onChange={(e) => handleChange('message', e.target.value)} placeholder="Escreva sua mensagem..." rows={5} required />
+                    <Textarea
+                      id="message"
+                      value={form.message}
+                      onChange={(e) => handleChange('message', e.target.value)}
+                      placeholder="Escreva sua mensagem..."
+                      rows={5}
+                      required
+                    />
                   </div>
-                  <Button type="submit" size="lg" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold" disabled={mutation.isPending}>
-                    {mutation.isPending ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Enviando...</> : 'Enviar Mensagem'}
+
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
+                    disabled={mutation.isPending}
+                  >
+                    {mutation.isPending ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Enviando...
+                      </>
+                    ) : (
+                      'Enviar Mensagem'
+                    )}
                   </Button>
                 </motion.form>
               )}
