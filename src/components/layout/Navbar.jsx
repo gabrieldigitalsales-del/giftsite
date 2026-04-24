@@ -24,7 +24,7 @@ export default function Navbar() {
       <div className="bg-secondary text-secondary-foreground hidden md:block">
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between text-xs">
           <div className="flex items-center gap-6">
-            <a href={`tel:${settings.phone}`} className="flex items-center gap-1 hover:text-primary transition-colors">
+            <a href={settings.telLink} className="flex items-center gap-1 hover:text-primary transition-colors">
               <Phone className="w-3 h-3" /> {settings.phone}
             </a>
           </div>
@@ -36,7 +36,6 @@ export default function Navbar() {
 
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
-          <img src="/logo-gift.jpeg" alt="Gift Excellence" className="h-12 w-auto" />
           <div>
             <p className="font-heading text-3xl leading-none text-secondary">GIFT</p>
             <p className="font-heading text-2xl leading-none text-primary -mt-1">EXCELLENCE</p>

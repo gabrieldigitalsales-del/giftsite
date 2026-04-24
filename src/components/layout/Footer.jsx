@@ -97,12 +97,15 @@ export default function Footer() {
       <div className="border-t border-secondary-foreground/10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-secondary-foreground/40">
           <p>© {new Date().getFullYear()} Gift Excellence. Todos os direitos reservados.</p>
-          <p>
-            Site criado pela{' '}
-            <a href="https://www.instagram.com/nexor_digital_group_/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-              Nexor Digital Group
-            </a>
-          </p>
+
+          <a
+            href="https://www.instagram.com/nexor_digital_group_/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative z-50 inline-block text-xs text-secondary-foreground/40 hover:text-primary hover:underline transition-colors cursor-pointer pointer-events-auto"
+          >
+            Site criado pela <span className="ml-1 text-primary hover:underline">Nexor Digital Group</span>
+          </a>
         </div>
       </div>
     </footer>

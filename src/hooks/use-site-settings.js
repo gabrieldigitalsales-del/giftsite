@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/lib/supabase';
 import {
   PHONE as DEFAULT_PHONE,
   EMAIL as DEFAULT_EMAIL,
@@ -23,12 +23,27 @@ const toInstagramHandle = (url) => {
 
 const digitsOnly = (value = '') => value.replace(/\D/g, '');
 
+async function fetchSiteSettings() {
+  const { data, error } = await supabase
+    .from('gift_site_settings')
+    .select('key, value, updated_at')
+    .order('key', { ascending: true });
+
+  if (error) throw error;
+  return data || [];
+}
+
 export function useSiteSettings() {
   const query = useQuery({
     queryKey: ['siteSettings'],
-    queryFn: () => base44.entities.SiteSettings.list('key'),
-    staleTime: 30_000,
+    queryFn: fetchSiteSettings,
     initialData: [],
+    staleTime: 0,
+    gcTime: 1000 * 60 * 30,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: true,
   });
 
   const settings = useMemo(() => {
@@ -37,8 +52,8 @@ export function useSiteSettings() {
       map[item.key] = item.value;
     }
 
-    const whatsappNumber = digitsOnly(map.phone || DEFAULT_WHATSAPP_NUMBER);
     const phone = map.phone || DEFAULT_PHONE;
+    const whatsappNumber = digitsOnly(map.phone || DEFAULT_WHATSAPP_NUMBER);
     const email = map.email || DEFAULT_EMAIL;
     const instagram = map.instagram || DEFAULT_INSTAGRAM;
     const address = map.address || DEFAULT_ADDRESS;
@@ -47,6 +62,7 @@ export function useSiteSettings() {
     return {
       raw: map,
       phone,
+      telLink: `tel:${digitsOnly(phone)}`,
       email,
       instagram,
       instagramHandle: toInstagramHandle(instagram),
