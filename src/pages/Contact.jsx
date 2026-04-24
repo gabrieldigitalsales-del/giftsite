@@ -151,7 +151,7 @@ export default function Contact() {
 
           <div className="mt-16 rounded-xl overflow-hidden border border-border shadow-lg">
             <iframe
-              src="https://www.google.com/maps?q=Mais%20Chopp%20Ecobier%20Sete%20Lagoas&output=embed"
+              src="https://www.google.com/maps?q=-19.4721787,-44.2039502&output=embed"
               width="100%"
               height="400"
               style={{ border: 0 }}
