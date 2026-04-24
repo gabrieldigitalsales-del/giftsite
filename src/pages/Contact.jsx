@@ -151,7 +151,7 @@ export default function Contact() {
 
           <div className="mt-16 rounded-xl overflow-hidden border border-border shadow-lg">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d240098.18021399858!2d-44.09453964999999!3d-19.9024025!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa690cacacf2c33%3A0x5b35fdc997a7212d!2sBelo%20Horizonte%2C%20MG!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
+              src="https://www.google.com/maps?q=Mais%20Chopp%20Ecobier%20Sete%20Lagoas&output=embed"
               width="100%"
               height="400"
               style={{ border: 0 }}
