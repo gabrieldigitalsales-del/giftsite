@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,23 +16,23 @@ export default function AdminGallery() {
 
   const { data: images } = useQuery({
     queryKey: ['gallery'],
-    queryFn: () => base44.entities.GalleryImage.list('order'),
+    queryFn: () => appClient.entities.GalleryImage.list('order'),
     initialData: [],
   });
 
   const createMut = useMutation({
-    mutationFn: (d) => base44.entities.GalleryImage.create(d),
+    mutationFn: (d) => appClient.entities.GalleryImage.create(d),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['gallery'] }); setEditing(null); toast.success('Imagem adicionada!'); },
   });
   const deleteMut = useMutation({
-    mutationFn: (id) => base44.entities.GalleryImage.delete(id),
+    mutationFn: (id) => appClient.entities.GalleryImage.delete(id),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['gallery'] }); toast.success('Imagem removida!'); },
   });
 
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await appClient.integrations.Core.UploadFile({ file });
     setEditing(prev => ({ ...prev, image_url: file_url }));
   };
 

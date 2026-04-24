@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -23,22 +23,22 @@ export default function AdminMachines() {
 
   const { data: machines, isLoading } = useQuery({
     queryKey: ['machines'],
-    queryFn: () => base44.entities.Machine.list('order'),
+    queryFn: () => appClient.entities.Machine.list('order'),
     initialData: [],
   });
 
   const createMut = useMutation({
-    mutationFn: (data) => base44.entities.Machine.create(data),
+    mutationFn: (data) => appClient.entities.Machine.create(data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['machines'] }); setEditing(null); toast.success('Máquina criada!'); },
   });
 
   const updateMut = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Machine.update(id, data),
+    mutationFn: ({ id, data }) => appClient.entities.Machine.update(id, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['machines'] }); setEditing(null); toast.success('Máquina atualizada!'); },
   });
 
   const deleteMut = useMutation({
-    mutationFn: (id) => base44.entities.Machine.delete(id),
+    mutationFn: (id) => appClient.entities.Machine.delete(id),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['machines'] }); toast.success('Máquina removida!'); },
   });
 
@@ -81,7 +81,7 @@ export default function AdminMachines() {
     try {
       setUploading(true);
       toast.info('Enviando imagem...');
-      const { file_url } = await base44.integrations.Core.UploadFile({ file, folder: 'machines' });
+      const { file_url } = await appClient.integrations.Core.UploadFile({ file, folder: 'machines' });
       setEditing(prev => prev ? ({ ...prev, images: [...(prev.images || []), file_url] }) : prev);
       toast.success('Imagem adicionada!');
     } catch (error) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import PageHeader from '@/components/shared/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,12 +18,12 @@ export default function QuoteRequest() {
 
   const { data: machines } = useQuery({
     queryKey: ['machines'],
-    queryFn: () => base44.entities.Machine.list('order'),
+    queryFn: () => appClient.entities.Machine.list('order'),
     initialData: [],
   });
 
   const mutation = useMutation({
-    mutationFn: (data) => base44.entities.QuoteRequest.create(data),
+    mutationFn: (data) => appClient.entities.QuoteRequest.create(data),
     onSuccess: () => {
       setSubmitted(true);
       toast.success('Pedido de orçamento enviado com sucesso!');

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import { useMutation } from '@tanstack/react-query';
 import { CheckCircle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -15,7 +15,7 @@ export default function TechSupport() {
   const [submitted, setSubmitted] = useState(false);
 
   const mutation = useMutation({
-    mutationFn: (data) => base44.entities.TechSupportRequest.create(data),
+    mutationFn: (data) => appClient.entities.TechSupportRequest.create(data),
     onSuccess: () => {
       setSubmitted(true);
       toast.success('Solicitação enviada com sucesso!');

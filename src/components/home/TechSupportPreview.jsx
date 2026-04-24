@@ -24,12 +24,15 @@ export default function TechSupportPreview() {
             <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
               <Wrench className="w-8 h-8 text-primary" />
             </div>
+
             <h2 className="font-heading text-4xl md:text-6xl text-secondary mb-6">
               ASSISTÊNCIA <span className="text-primary">TÉCNICA</span>
             </h2>
+
             <p className="text-muted-foreground text-lg leading-relaxed mb-8">
               Conte com nosso time de profissionais especializados para manter seus equipamentos sempre em pleno funcionamento. Oferecemos suporte completo com agilidade e competência.
             </p>
+
             <ul className="space-y-3 mb-8">
               {benefits.map((b, i) => (
                 <li key={i} className="flex items-center gap-3 text-foreground">
@@ -38,6 +41,7 @@ export default function TechSupportPreview() {
                 </li>
               ))}
             </ul>
+
             <Link to="/assistencia-tecnica">
               <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold group">
                 Solicitar Assistência
@@ -51,14 +55,9 @@ export default function TechSupportPreview() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="relative"
+            className="flex justify-center lg:justify-end"
           >
-            <img
-              src="/logo-gift.jpeg"
-              alt="Assistência técnica Gift Excellence"
-              className="rounded-xl shadow-2xl w-full"
-            />
-            <div className="absolute -bottom-6 -left-6 bg-primary text-primary-foreground p-6 rounded-xl shadow-xl hidden md:block">
+            <div className="bg-primary text-primary-foreground p-6 rounded-xl shadow-xl w-full max-w-xs">
               <div className="font-heading text-3xl">100%</div>
               <div className="text-sm text-primary-foreground/80">Compromisso com qualidade</div>
             </div>

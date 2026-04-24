@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import { Package, FileText, MessageSquare, Image } from 'lucide-react';
 
 export default function AdminHome() {
-  const { data: machines } = useQuery({ queryKey: ['machines'], queryFn: () => base44.entities.Machine.list(), initialData: [] });
-  const { data: quotes } = useQuery({ queryKey: ['quotes'], queryFn: () => base44.entities.QuoteRequest.list(), initialData: [] });
-  const { data: techRequests } = useQuery({ queryKey: ['techRequests'], queryFn: () => base44.entities.TechSupportRequest.list(), initialData: [] });
-  const { data: gallery } = useQuery({ queryKey: ['gallery'], queryFn: () => base44.entities.GalleryImage.list(), initialData: [] });
+  const { data: machines } = useQuery({ queryKey: ['machines'], queryFn: () => appClient.entities.Machine.list(), initialData: [] });
+  const { data: quotes } = useQuery({ queryKey: ['quotes'], queryFn: () => appClient.entities.QuoteRequest.list(), initialData: [] });
+  const { data: techRequests } = useQuery({ queryKey: ['techRequests'], queryFn: () => appClient.entities.TechSupportRequest.list(), initialData: [] });
+  const { data: gallery } = useQuery({ queryKey: ['gallery'], queryFn: () => appClient.entities.GalleryImage.list(), initialData: [] });
 
   const stats = [
     { label: 'Máquinas', count: machines.length, icon: Package, path: '/admin/maquinas', color: 'bg-blue-500' },

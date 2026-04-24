@@ -102,9 +102,9 @@ export default function Footer() {
             href="https://www.instagram.com/nexor_digital_group_/"
             target="_blank"
             rel="noopener noreferrer"
-            className="relative z-50 inline-block text-xs text-secondary-foreground/40 hover:text-primary hover:underline transition-colors cursor-pointer pointer-events-auto"
+            className="relative z-50 inline-flex items-center text-xs text-secondary-foreground/40 hover:text-primary transition-colors cursor-pointer pointer-events-auto"
           >
-            Site criado pela <span className="ml-1 text-primary hover:underline">Nexor Digital Group</span>
+            <span className="text-primary hover:underline">Site criado pela Nexor Digital Group</span>
           </a>
         </div>
       </div>

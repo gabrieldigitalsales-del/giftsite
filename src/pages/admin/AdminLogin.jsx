@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/lib/AuthContext';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import { toast } from 'sonner';
 
 export default function AdminLogin() {
@@ -24,7 +24,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     try {
-      await base44.auth.signIn(email, password);
+      await appClient.auth.signIn(email, password);
       toast.success('Login realizado com sucesso.');
       navigate('/admin');
     } catch (error) {

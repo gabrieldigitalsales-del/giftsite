@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,17 +15,17 @@ export default function AdminTechSupport() {
 
   const { data: requests } = useQuery({
     queryKey: ['techRequests'],
-    queryFn: () => base44.entities.TechSupportRequest.list('-created_date'),
+    queryFn: () => appClient.entities.TechSupportRequest.list('-created_date'),
     initialData: [],
   });
 
   const updateMut = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.TechSupportRequest.update(id, data),
+    mutationFn: ({ id, data }) => appClient.entities.TechSupportRequest.update(id, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['techRequests'] }); toast.success('Atualizado!'); },
   });
 
   const deleteMut = useMutation({
-    mutationFn: (id) => base44.entities.TechSupportRequest.delete(id),
+    mutationFn: (id) => appClient.entities.TechSupportRequest.delete(id),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['techRequests'] }); toast.success('Removido!'); },
   });
 

@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import {
   PHONE as DEFAULT_PHONE,
@@ -9,6 +9,10 @@ import {
   HOURS as DEFAULT_HOURS,
   WHATSAPP_NUMBER as DEFAULT_WHATSAPP_NUMBER,
 } from '@/lib/constants';
+
+const DEFAULT_ABOUT_TEXT = 'A Gift Excellence é uma empresa especializada em soluções industriais para os segmentos de brindes, personalização e embalagens, com foco em qualidade, produtividade e atendimento consultivo.';
+const DEFAULT_MISSION = 'Nossa missão é desenvolver soluções industriais que entreguem produtividade, segurança e qualidade para nossos clientes.';
+const DEFAULT_VISION = 'Nossa visão é ser referência em tecnologia industrial, reconhecida pela inovação, durabilidade e alto desempenho das nossas máquinas.';
 
 const toInstagramHandle = (url) => {
   if (!url) return '@giftexcellence_ofc';
@@ -33,7 +37,15 @@ async function fetchSiteSettings() {
   return data || [];
 }
 
+function splitParagraphs(text, fallback) {
+  return (text || fallback)
+    .split(/\n\s*\n|\r\n\s*\r\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 export function useSiteSettings() {
+  const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ['siteSettings'],
     queryFn: fetchSiteSettings,
@@ -42,9 +54,24 @@ export function useSiteSettings() {
     gcTime: 1000 * 60 * 30,
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
-    refetchInterval: 5000,
-    refetchIntervalInBackground: true,
   });
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('gift-site-settings-live')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'gift_site_settings' },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['siteSettings'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   const settings = useMemo(() => {
     const map = {};
@@ -58,6 +85,9 @@ export function useSiteSettings() {
     const instagram = map.instagram || DEFAULT_INSTAGRAM;
     const address = map.address || DEFAULT_ADDRESS;
     const hours = map.hours || DEFAULT_HOURS;
+    const aboutText = map.about_text || DEFAULT_ABOUT_TEXT;
+    const mission = map.mission || DEFAULT_MISSION;
+    const vision = map.vision || DEFAULT_VISION;
 
     return {
       raw: map,
@@ -70,6 +100,10 @@ export function useSiteSettings() {
       hours,
       whatsappNumber,
       whatsappLink: `https://wa.me/${whatsappNumber}`,
+      aboutText,
+      aboutParagraphs: splitParagraphs(aboutText, DEFAULT_ABOUT_TEXT),
+      mission,
+      vision,
       getWhatsAppLink(message = '') {
         const encoded = encodeURIComponent(message);
         return `https://wa.me/${whatsappNumber}${message ? `?text=${encoded}` : ''}`;

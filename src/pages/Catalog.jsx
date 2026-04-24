@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import PageHeader from '@/components/shared/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,7 +24,7 @@ export default function Catalog() {
 
   const { data: machines, isLoading } = useQuery({
     queryKey: ['machines'],
-    queryFn: () => base44.entities.Machine.list('order'),
+    queryFn: () => appClient.entities.Machine.list('order'),
     initialData: [],
   });
 
@@ -97,7 +97,7 @@ export default function Catalog() {
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img
-                      src={machine.images?.[0] || "/logo-gift.jpeg"}
+                      src={machine.images?.[0] || "/placeholder-machine.svg"}
                       alt={machine.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />

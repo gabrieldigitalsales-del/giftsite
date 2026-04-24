@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import PageHeader from '@/components/shared/PageHeader';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
@@ -20,7 +20,7 @@ export default function Gallery() {
 
   const { data: images } = useQuery({
     queryKey: ['gallery'],
-    queryFn: () => base44.entities.GalleryImage.list('order'),
+    queryFn: () => appClient.entities.GalleryImage.list('order'),
     initialData: [],
   });
 

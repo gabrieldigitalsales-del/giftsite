@@ -40,7 +40,7 @@ export default function FeaturedMachines({ machines }) {
             >
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img
-                  src={machine.images?.[0] || "/logo-gift.jpeg"}
+                  src={machine.images?.[0] || "/placeholder-machine.svg"}
                   alt={machine.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />

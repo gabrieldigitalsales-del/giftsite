@@ -61,7 +61,7 @@ const createEntityApi = (entityName) => {
   };
 };
 
-export const base44 = {
+export const appClient = {
   entities: {
     Machine: createEntityApi('Machine'),
     HeroSlide: createEntityApi('HeroSlide'),

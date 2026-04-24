@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
@@ -14,7 +14,7 @@ export default function MachineDetail() {
 
   const { data: machines } = useQuery({
     queryKey: ['machines'],
-    queryFn: () => base44.entities.Machine.list('order'),
+    queryFn: () => appClient.entities.Machine.list('order'),
     initialData: [],
   });
 
@@ -30,7 +30,7 @@ export default function MachineDetail() {
     );
   }
 
-  const images = machine.images?.length > 0 ? machine.images : ["/logo-gift.jpeg"];
+  const images = machine.images?.length > 0 ? machine.images : ["/placeholder-machine.svg"];
 
   const specs = [
     { label: "Sistemática", value: machine.sistematica },
@@ -149,7 +149,7 @@ export default function MachineDetail() {
               {related.map(m => (
                 <Link key={m.id} to={`/catalogo/${m.slug || m.id}`} className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 hover:shadow-xl transition-all">
                   <div className="aspect-[4/3] overflow-hidden">
-                    <img src={m.images?.[0] || "/logo-gift.jpeg"} alt={m.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img src={m.images?.[0] || "/placeholder-machine.svg"} alt={m.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   </div>
                   <div className="p-4">
                     <h3 className="font-bold text-secondary group-hover:text-primary transition-colors">{m.name}</h3>

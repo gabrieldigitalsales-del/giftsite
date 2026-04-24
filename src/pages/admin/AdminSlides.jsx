@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,20 +15,20 @@ export default function AdminSlides() {
 
   const { data: slides, isLoading } = useQuery({
     queryKey: ['heroSlides'],
-    queryFn: () => base44.entities.HeroSlide.list('order'),
+    queryFn: () => appClient.entities.HeroSlide.list('order'),
     initialData: [],
   });
 
   const createMut = useMutation({
-    mutationFn: (d) => base44.entities.HeroSlide.create(d),
+    mutationFn: (d) => appClient.entities.HeroSlide.create(d),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['heroSlides'] }); setEditing(null); toast.success('Slide criado!'); },
   });
   const updateMut = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.HeroSlide.update(id, data),
+    mutationFn: ({ id, data }) => appClient.entities.HeroSlide.update(id, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['heroSlides'] }); setEditing(null); toast.success('Slide atualizado!'); },
   });
   const deleteMut = useMutation({
-    mutationFn: (id) => base44.entities.HeroSlide.delete(id),
+    mutationFn: (id) => appClient.entities.HeroSlide.delete(id),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['heroSlides'] }); toast.success('Slide removido!'); },
   });
 
@@ -45,7 +45,7 @@ export default function AdminSlides() {
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await appClient.integrations.Core.UploadFile({ file });
     setEditing(prev => ({ ...prev, image_url: file_url }));
   };
 

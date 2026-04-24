@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,20 +16,20 @@ export default function AdminServices() {
 
   const { data: services } = useQuery({
     queryKey: ['services'],
-    queryFn: () => base44.entities.Service.list('order'),
+    queryFn: () => appClient.entities.Service.list('order'),
     initialData: [],
   });
 
   const createMut = useMutation({
-    mutationFn: (d) => base44.entities.Service.create(d),
+    mutationFn: (d) => appClient.entities.Service.create(d),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['services'] }); setEditing(null); toast.success('Serviço criado!'); },
   });
   const updateMut = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Service.update(id, data),
+    mutationFn: ({ id, data }) => appClient.entities.Service.update(id, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['services'] }); setEditing(null); toast.success('Atualizado!'); },
   });
   const deleteMut = useMutation({
-    mutationFn: (id) => base44.entities.Service.delete(id),
+    mutationFn: (id) => appClient.entities.Service.delete(id),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['services'] }); toast.success('Removido!'); },
   });
 

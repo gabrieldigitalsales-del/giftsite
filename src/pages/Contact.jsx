@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { appClient } from '@/api/appClient';
 import PageHeader from '@/components/shared/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,7 +25,7 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
 
   const mutation = useMutation({
-    mutationFn: (payload) => base44.entities.ContactMessage.create(payload),
+    mutationFn: (payload) => appClient.entities.ContactMessage.create(payload),
     onSuccess: () => {
       setSubmitted(true);
       toast.success('Mensagem enviada com sucesso!');
