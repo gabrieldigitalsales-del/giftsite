@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import {
   PHONE as DEFAULT_PHONE,
@@ -17,7 +17,7 @@ const DEFAULT_VISION = 'Nossa visão é ser referência em tecnologia industrial
 const toInstagramHandle = (url) => {
   if (!url) return '@giftexcellence_ofc';
   try {
-    const clean = url.replace(/\/$/, '');
+    const clean = String(url).replace(/\/$/, '');
     const handle = clean.split('/').filter(Boolean).pop();
     return handle ? `@${handle}` : '@giftexcellence_ofc';
   } catch {
@@ -25,28 +25,31 @@ const toInstagramHandle = (url) => {
   }
 };
 
-const digitsOnly = (value = '') => value.replace(/\D/g, '');
+const digitsOnly = (value = '') => String(value).replace(/\D/g, '');
 
 async function fetchSiteSettings() {
-  if (!isSupabaseConfigured) return [];
+  if (!isSupabaseConfigured || !supabase) return [];
   const { data, error } = await supabase
     .from('gift_site_settings')
-    .select('key, value, updated_at')
+    .select('key, value')
     .order('key', { ascending: true });
 
-  if (error) throw error;
-  return data || [];
+  if (error) {
+    console.error('Erro ao carregar gift_site_settings:', error);
+    return [];
+  }
+
+  return Array.isArray(data) ? data : [];
 }
 
 function splitParagraphs(text, fallback) {
-  return (text || fallback)
+  return String(text || fallback)
     .split(/\n\s*\n|\r\n\s*\r\n/)
     .map((item) => item.trim())
     .filter(Boolean);
 }
 
 export function useSiteSettings() {
-  const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ['siteSettings'],
     queryFn: fetchSiteSettings,
@@ -55,30 +58,14 @@ export function useSiteSettings() {
     gcTime: 1000 * 60 * 30,
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
+    refetchInterval: isSupabaseConfigured ? 5000 : false,
+    retry: 1,
   });
-
-  useEffect(() => {
-    if (!isSupabaseConfigured) return undefined;
-    const channel = supabase
-      .channel('gift-site-settings-live')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'gift_site_settings' },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ['siteSettings'] });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient]);
 
   const settings = useMemo(() => {
     const map = {};
     for (const item of query.data || []) {
-      map[item.key] = item.value;
+      if (item?.key) map[item.key] = item.value;
     }
 
     const phone = map.phone || DEFAULT_PHONE;
