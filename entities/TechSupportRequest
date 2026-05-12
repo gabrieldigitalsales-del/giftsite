@@ -1,0 +1,51 @@
+{
+  "name": "TechSupportRequest",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nome completo"
+    },
+    "company": {
+      "type": "string",
+      "description": "Empresa"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Telefone / WhatsApp"
+    },
+    "email": {
+      "type": "string",
+      "description": "E-mail"
+    },
+    "equipment": {
+      "type": "string",
+      "description": "Equipamento / M\u00e1quina"
+    },
+    "problem_description": {
+      "type": "string",
+      "description": "Descri\u00e7\u00e3o do problema"
+    },
+    "city_state": {
+      "type": "string",
+      "description": "Cidade / Estado"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "novo",
+        "em_andamento",
+        "resolvido",
+        "fechado"
+      ],
+      "default": "novo"
+    }
+  },
+  "required": [
+    "name",
+    "phone",
+    "email",
+    "equipment",
+    "problem_description"
+  ]
+}

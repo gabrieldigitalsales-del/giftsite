@@ -1,0 +1,31 @@
+{
+  "name": "SiteSettings",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Chave da configura\u00e7\u00e3o (ex: about_text, contact_phone)"
+    },
+    "value": {
+      "type": "string",
+      "description": "Valor da configura\u00e7\u00e3o"
+    },
+    "section": {
+      "type": "string",
+      "enum": [
+        "geral",
+        "home",
+        "sobre",
+        "contato",
+        "servicos",
+        "rodape",
+        "seo"
+      ],
+      "description": "Se\u00e7\u00e3o do site"
+    }
+  },
+  "required": [
+    "key",
+    "value"
+  ]
+}

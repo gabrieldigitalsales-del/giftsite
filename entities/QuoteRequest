@@ -1,0 +1,49 @@
+{
+  "name": "QuoteRequest",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nome completo"
+    },
+    "company": {
+      "type": "string",
+      "description": "Empresa"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Telefone / WhatsApp"
+    },
+    "email": {
+      "type": "string",
+      "description": "E-mail"
+    },
+    "city_state": {
+      "type": "string",
+      "description": "Cidade / Estado"
+    },
+    "machine_interest": {
+      "type": "string",
+      "description": "M\u00e1quina de interesse"
+    },
+    "message": {
+      "type": "string",
+      "description": "Mensagem"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "novo",
+        "em_andamento",
+        "respondido",
+        "fechado"
+      ],
+      "default": "novo"
+    }
+  },
+  "required": [
+    "name",
+    "phone",
+    "email"
+  ]
+}
