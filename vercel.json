@@ -8,6 +8,14 @@
   ],
   "rewrites": [
     {
+      "source": "/anti-fake-query",
+      "destination": "https://anti-fake-query.giftexcellence.com.br/"
+    },
+    {
+      "source": "/anti-fake-query/",
+      "destination": "https://anti-fake-query.giftexcellence.com.br/"
+    },
+    {
       "source": "/anti-fake-query/:path*",
       "destination": "https://anti-fake-query.giftexcellence.com.br/:path*"
     },
