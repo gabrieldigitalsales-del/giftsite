@@ -1,12 +1,28 @@
 import React from 'react';
-import { Factory, Store, Gift, Package } from 'lucide-react';
+import { Factory, Store, Zap, PackageCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const segments = [
-  { icon: Factory, title: "Indústrias", desc: "Equipamentos robustos para produção industrial em larga escala" },
-  { icon: Store, title: "Pequenos Negócios", desc: "Soluções acessíveis e eficientes para empreendedores" },
-  { icon: Gift, title: "Brindes e Personalização", desc: "Máquinas para criação de produtos personalizados e únicos" },
-  { icon: Package, title: "Embalagens", desc: "Tecnologia de ponta para o segmento de embalagens" },
+  {
+    icon: Factory,
+    title: "Indústrias",
+    desc: "Equipamentos robustos para produção em larga escala com mais eficiência"
+  },
+  {
+    icon: Store,
+    title: "Pequenos Negócios",
+    desc: "Soluções acessíveis para empreendedores crescerem com produtividade"
+  },
+  {
+    icon: Zap,
+    title: "Alta Produtividade",
+    desc: "Máquinas desenvolvidas para acelerar processos e aumentar a capacidade de produção"
+  },
+  {
+    icon: PackageCheck,
+    title: "Embalagens",
+    desc: "Tecnologia para proteger, valorizar e destacar seus produtos no mercado"
+  },
 ];
 
 export default function Segments() {
@@ -19,7 +35,10 @@ export default function Segments() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <span className="text-primary font-semibold text-sm uppercase tracking-widest">Segmentos</span>
+          <span className="text-primary font-semibold text-sm uppercase tracking-widest">
+            Segmentos
+          </span>
+
           <h2 className="font-heading text-4xl md:text-6xl text-secondary mt-2">
             QUEM <span className="text-primary">ATENDEMOS</span>
           </h2>
@@ -28,7 +47,7 @@ export default function Segments() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {segments.map((seg, i) => (
             <motion.div
-              key={i}
+              key={seg.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -36,12 +55,19 @@ export default function Segments() {
               className="group relative p-8 rounded-xl bg-card border border-border hover:border-primary/40 text-center hover:shadow-xl transition-all duration-500 overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
               <div className="relative z-10">
                 <div className="w-16 h-16 mx-auto rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
                   <seg.icon className="w-8 h-8 text-primary group-hover:text-primary-foreground transition-colors" />
                 </div>
-                <h3 className="font-bold text-lg text-secondary mb-2">{seg.title}</h3>
-                <p className="text-muted-foreground text-sm">{seg.desc}</p>
+
+                <h3 className="font-bold text-lg text-secondary mb-2">
+                  {seg.title}
+                </h3>
+
+                <p className="text-muted-foreground text-sm">
+                  {seg.desc}
+                </p>
               </div>
             </motion.div>
           ))}
