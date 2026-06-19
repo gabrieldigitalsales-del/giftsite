@@ -4,24 +4,17 @@
       "source": "/financeiro",
       "destination": "https://spiked-my-finance-flow.base44.app",
       "permanent": true
-    },
-    {
-      "source": "/anti-fake-query",
-      "destination": "https://anti-fake-query.giftexcellence.com.br/",
-      "permanent": false
-    },
-    {
-      "source": "/anti-fake-query/",
-      "destination": "https://anti-fake-query.giftexcellence.com.br/",
-      "permanent": false
-    },
-    {
-      "source": "/anti-fake-query/:path*",
-      "destination": "https://anti-fake-query.giftexcellence.com.br/:path*",
-      "permanent": false
     }
   ],
   "rewrites": [
+    {
+      "source": "/anti-fake-query",
+      "destination": "/anti-fake-query/index.html"
+    },
+    {
+      "source": "/anti-fake-query/",
+      "destination": "/anti-fake-query/index.html"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
