@@ -13,8 +13,8 @@ const settingsConfig = [
     { key: 'phone', label: 'Telefone / WhatsApp', placeholder: '+55 31 3772-6397' },
     { key: 'email', label: 'E-mail', placeholder: 'giftexcellence.03@gmail.com' },
     { key: 'instagram', label: 'Instagram URL', placeholder: 'https://www.instagram.com/giftexcellence_ofc/' },
-    { key: 'address', label: 'Endereço', placeholder: 'Belo Horizonte, MG - Brasil' },
-    { key: 'hours', label: 'Horário de Atendimento', placeholder: 'Segunda a Sexta: 08h às 18h' },
+    { key: 'address', label: 'Endereço', placeholder: 'Sete Lagoas, MG - Brasil' },
+    { key: 'hours', label: 'Horário de Atendimento', placeholder: 'Segunda a Sexta: 07h às 17h' },
   ]},
   { section: 'sobre', label: 'Sobre', fields: [
     { key: 'about_text', label: 'Texto sobre a empresa', textarea: true },
