@@ -104,7 +104,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="relative z-50 inline-flex items-center text-xs text-secondary-foreground/40 hover:text-primary transition-colors cursor-pointer pointer-events-auto"
           >
-            <span className="text-primary hover:underline">Site criado pela Nexor Digital Group</span>
+            <span className="text-primary hover:underline">Site criado pela @nexor_digital_ </span>
           </a>
         </div>
       </div>
