@@ -2,7 +2,7 @@
   "redirects": [
     {
       "source": "/financeiro",
-      "destination": "https://spiked-my-finance-flow.base44.app",
+      "destination": "https://financeiro-gift.vercel.app",
       "permanent": true
     }
   ],
