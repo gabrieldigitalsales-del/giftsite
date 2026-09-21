@@ -96,7 +96,11 @@ export default function Footer() {
 
       <div className="border-t border-secondary-foreground/10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-secondary-foreground/40">
-          <p>© {new Date().getFullYear()} Gift Excellence. Todos os direitos reservados.</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <p>© {new Date().getFullYear()} Gift Excellence. Todos os direitos reservados.</p>
+            <Link to="/privacidade" className="hover:text-primary transition-colors">Privacidade</Link>
+            <Link to="/termos" className="hover:text-primary transition-colors">Termos</Link>
+          </div>
 
           <a
             href="https://www.instagram.com/nexor_digital_group_/"
