@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://giftexcellence.com.br/sitemap.xml
