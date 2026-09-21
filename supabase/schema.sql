@@ -13,7 +13,7 @@ create table if not exists public.gift_machines (
   rendimento text,
   applications text,
   benefits text,
-  category text check (category in ('brindes','embalagens','industrial','personalizacao','outro')) default 'industrial',
+  category text check (category in ('enche-palheiros','prensas','peneiras','embalagem','corte')) default 'enche-palheiros',
   featured boolean not null default false,
   "order" integer not null default 0,
   active boolean not null default true,
@@ -320,3 +320,28 @@ using(bucket_id='gift-excellence-media' and exists(select 1 from public.gift_sit
 -- Menor privilégio para a lista de admins
 revoke all on table public.gift_site_admins from authenticated;
 grant select on table public.gift_site_admins to authenticated;
+
+
+-- Categorias reais do catálogo GIFT
+alter table public.gift_machines drop constraint if exists gift_machines_category_check;
+
+update public.gift_machines set category='enche-palheiros'
+where slug in ('enche-palheiros-vibro-master','enche-palheiros-bate-turbo');
+
+update public.gift_machines set category='embalagem'
+where slug='maquina-de-embalar';
+
+update public.gift_machines set category='peneiras'
+where slug in ('peneira-2-saidas-7-soldas-apresenta','peneira-3-decks');
+
+update public.gift_machines set category='prensas'
+where slug in ('prensa-hidraulica-35-toneladas','prensa-hidraulica-80-toneladas','prensa-hidraulica-120-toneladas');
+
+update public.gift_machines set category='corte'
+where slug='maquina-de-cortar-palha';
+
+alter table public.gift_machines
+  add constraint gift_machines_category_check
+  check (category in ('enche-palheiros','prensas','peneiras','embalagem','corte'));
+
+alter table public.gift_machines alter column category set default 'enche-palheiros';
