@@ -15,6 +15,7 @@ import { getWhatsAppLink } from '@/lib/constants';
 export default function QuoteRequest() {
   const [form, setForm] = useState({ name: '', company: '', phone: '', email: '', city_state: '', machine_interest: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [websiteCheck, setWebsiteCheck] = useState('');
 
   const { data: machines } = useQuery({
     queryKey: ['machines'],
@@ -35,6 +36,10 @@ export default function QuoteRequest() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (websiteCheck) {
+      setSubmitted(true);
+      return;
+    }
     if (!form.name || !form.phone || !form.email) {
       toast.error('Por favor, preencha os campos obrigatórios');
       return;
@@ -90,6 +95,16 @@ export default function QuoteRequest() {
             animate={{ opacity: 1, y: 0 }}
             className="bg-card rounded-xl border border-border p-8 shadow-lg space-y-5"
           >
+            <input
+              type="text"
+              name="website"
+              value={websiteCheck}
+              onChange={(e) => setWebsiteCheck(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="absolute opacity-0 pointer-events-none h-0 w-0"
+            />
             <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-2">
               <p className="text-sm text-primary font-medium">Preencha os dados abaixo e nossa equipe entrará em contato com o melhor orçamento para você.</p>
             </div>
