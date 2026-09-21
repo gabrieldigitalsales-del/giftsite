@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 export default function TechSupport() {
   const [form, setForm] = useState({ name: '', company: '', phone: '', email: '', equipment: '', problem_description: '', city_state: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [websiteCheck, setWebsiteCheck] = useState('');
 
   const mutation = useMutation({
     mutationFn: (data) => appClient.entities.TechSupportRequest.create(data),
@@ -27,6 +28,10 @@ export default function TechSupport() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (websiteCheck) {
+      setSubmitted(true);
+      return;
+    }
     if (!form.name || !form.phone || !form.email || !form.equipment || !form.problem_description) {
       toast.error('Por favor, preencha todos os campos obrigatórios');
       return;
@@ -68,6 +73,16 @@ export default function TechSupport() {
             animate={{ opacity: 1, y: 0 }}
             className="bg-card rounded-xl border border-border p-8 shadow-lg space-y-5"
           >
+            <input
+              type="text"
+              name="website"
+              value={websiteCheck}
+              onChange={(e) => setWebsiteCheck(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="absolute opacity-0 pointer-events-none h-0 w-0"
+            />
             <h3 className="font-heading text-2xl text-secondary mb-2">FORMULÁRIO DE ASSISTÊNCIA</h3>
             
             <div className="grid sm:grid-cols-2 gap-4">
