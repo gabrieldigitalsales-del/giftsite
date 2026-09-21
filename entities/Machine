@@ -52,11 +52,11 @@
     "category": {
       "type": "string",
       "enum": [
-        "brindes",
-        "embalagens",
-        "industrial",
-        "personalizacao",
-        "outro"
+        "enche-palheiros",
+        "prensas",
+        "peneiras",
+        "embalagem",
+        "corte"
       ],
       "description": "Categoria da m\u00e1quina"
     },
