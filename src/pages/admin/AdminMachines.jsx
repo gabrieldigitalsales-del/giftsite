@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Plus, Pencil, Trash2, Loader2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 
-const emptyMachine = { name: '', slug: '', images: [], short_description: '', description: '', sistematica: '', tecnica: '', medidas: '', rendimento: '', applications: '', benefits: '', category: 'industrial', featured: false, order: 0, active: true };
+const emptyMachine = { name: '', slug: '', images: [], short_description: '', description: '', sistematica: '', tecnica: '', medidas: '', rendimento: '', applications: '', benefits: '', category: 'enche-palheiros', featured: false, order: 0, active: true };
 
 export default function AdminMachines() {
   const queryClient = useQueryClient();
@@ -154,11 +154,11 @@ export default function AdminMachines() {
                   <Select value={editing.category} onValueChange={v => setEditing(p => ({ ...p, category: v }))}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="brindes">Brindes</SelectItem>
-                      <SelectItem value="embalagens">Embalagens</SelectItem>
-                      <SelectItem value="industrial">Industrial</SelectItem>
-                      <SelectItem value="personalizacao">Personalização</SelectItem>
-                      <SelectItem value="outro">Outro</SelectItem>
+                      <SelectItem value="enche-palheiros">Enche-palheiros</SelectItem>
+                      <SelectItem value="prensas">Prensas hidráulicas</SelectItem>
+                      <SelectItem value="peneiras">Peneiras</SelectItem>
+                      <SelectItem value="embalagem">Embalagem</SelectItem>
+                      <SelectItem value="corte">Corte de palha</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
