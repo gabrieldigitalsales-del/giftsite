@@ -14,11 +14,11 @@ import { toast } from 'sonner';
 
 const categories = [
   { value: 'all', label: 'Todas' },
-  { value: 'brindes', label: 'Brindes' },
-  { value: 'embalagens', label: 'Embalagens' },
-  { value: 'industrial', label: 'Industrial' },
-  { value: 'personalizacao', label: 'Personalização' },
-  { value: 'outro', label: 'Outros' },
+  { value: 'enche-palheiros', label: 'Enche-palheiros' },
+  { value: 'prensas', label: 'Prensas hidráulicas' },
+  { value: 'peneiras', label: 'Peneiras' },
+  { value: 'embalagem', label: 'Embalagem' },
+  { value: 'corte', label: 'Corte de palha' },
 ];
 
 export default function Catalog() {
