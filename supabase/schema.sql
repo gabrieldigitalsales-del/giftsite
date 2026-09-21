@@ -315,3 +315,8 @@ using(bucket_id='gift-excellence-media' and exists(select 1 from public.gift_sit
 with check(bucket_id='gift-excellence-media' and exists(select 1 from public.gift_site_admins a where a.user_id=(select auth.uid())));
 create policy "gift_media_admin_delete" on storage.objects for delete to authenticated
 using(bucket_id='gift-excellence-media' and exists(select 1 from public.gift_site_admins a where a.user_id=(select auth.uid())));
+
+
+-- Menor privilégio para a lista de admins
+revoke all on table public.gift_site_admins from authenticated;
+grant select on table public.gift_site_admins to authenticated;
