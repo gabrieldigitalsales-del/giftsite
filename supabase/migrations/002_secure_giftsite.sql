@@ -65,13 +65,13 @@ begin
 end $$;
 
 create policy "gift_machines_public_read" on public.gift_machines for select to anon,authenticated
-using(active=true or exists(select 1 from public.gift_site_admins a where a.user_id=(select auth.uid())));
+using(active=true);
 create policy "gift_hero_slides_public_read" on public.gift_hero_slides for select to anon,authenticated
-using(active=true or exists(select 1 from public.gift_site_admins a where a.user_id=(select auth.uid())));
+using(active=true);
 create policy "gift_gallery_images_public_read" on public.gift_gallery_images for select to anon,authenticated
-using(active=true or exists(select 1 from public.gift_site_admins a where a.user_id=(select auth.uid())));
+using(active=true);
 create policy "gift_services_public_read" on public.gift_services for select to anon,authenticated
-using(active=true or exists(select 1 from public.gift_site_admins a where a.user_id=(select auth.uid())));
+using(active=true);
 create policy "gift_site_settings_public_read" on public.gift_site_settings for select to anon,authenticated using(true);
 
 create policy "gift_quote_requests_public_insert" on public.gift_quote_requests for insert to anon,authenticated
