@@ -18,6 +18,8 @@ import Gallery from '@/pages/Gallery';
 import Contact from '@/pages/Contact';
 import QuoteRequest from '@/pages/QuoteRequest';
 import TechSupport from '@/pages/TechSupport';
+import Privacy from '@/pages/Privacy';
+import Terms from '@/pages/Terms';
 
 import AdminLogin from '@/pages/admin/AdminLogin';
 import AdminHome from '@/pages/admin/AdminHome';
@@ -47,6 +49,8 @@ function App() {
               <Route path="/contato" element={<Contact />} />
               <Route path="/orcamento" element={<QuoteRequest />} />
               <Route path="/assistencia-tecnica" element={<TechSupport />} />
+              <Route path="/privacidade" element={<Privacy />} />
+              <Route path="/termos" element={<Terms />} />
             </Route>
 
             <Route path="/admin/login" element={<AdminLogin />} />
