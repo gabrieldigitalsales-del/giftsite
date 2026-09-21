@@ -1,21 +1,49 @@
 # GIFT EXCELLENCE SITE
 
-Projeto desacoplado do Base44 e preparado para deploy na Vercel com Supabase.
+Site institucional e catálogo da GIFT Excellence, publicado na Vercel e integrado ao Supabase existente.
 
 ## Stack
 - React 18
 - Vite
 - Tailwind CSS
 - Supabase (Auth, Postgres e Storage)
+- Vercel Functions
 
-## Variáveis de ambiente
-Copie `.env.example` para `.env` e preencha:
+## Supabase
+Este projeto usa o Supabase já existente da operação. **Não crie outro projeto Supabase para o site.**
 
-```bash
-cp .env.example .env
-```
+Tabelas do site:
+- `gift_machines`
+- `gift_hero_slides`
+- `gift_gallery_images`
+- `gift_services`
+- `gift_site_settings`
+- `gift_quote_requests`
+- `gift_tech_support_requests`
+- `gift_contact_messages`
+- `gift_site_admins`
 
-## Instalação
+Bucket:
+- `gift-excellence-media`
+
+A migration `supabase/migrations/002_secure_giftsite.sql` endurece RLS, administração, Storage e proteção de envios públicos.
+
+## Variáveis na Vercel
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `VITE_SUPABASE_STORAGE_BUCKET=gift-excellence-media`
+- `RESEND_API_KEY` se o endpoint de e-mail for utilizado
+- `RESEND_FROM` opcional
+- `CONTACT_EMAIL` opcional
+- `ANTI_FAKE_INDEX` opcional
+- `ANTI_FAKE_API_URL` opcional, sempre HTTPS
+- `MAX_QUERY_TIMES` opcional
+- `SITE_URL=https://giftexcellence.com.br` recomendado
+
+## Admin
+O login usa Supabase Auth, mas autenticação sozinha não concede administração. O usuário também precisa existir em `gift_site_admins`.
+
+## Desenvolvimento
 ```bash
 npm install
 npm run dev
@@ -26,15 +54,7 @@ npm run dev
 npm run build
 ```
 
-## Supabase
-1. Crie um projeto novo no Supabase.
-2. Rode o SQL em `supabase/schema.sql`.
-3. Crie um usuário admin em Authentication > Users.
-4. Use esse e-mail e senha para acessar `/admin/login`.
-5. Crie o bucket público `gift-excellence-media` se ele ainda não existir.
+## Produção
+Domínio principal: `https://giftexcellence.com.br/`.
 
-## Deploy na Vercel
-- Framework preset: Vite
-- Build command: `npm run build`
-- Output directory: `dist`
-- Configure as variáveis `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` e `VITE_SUPABASE_STORAGE_BUCKET`.
+Nunca commite chaves privadas, service role ou senhas no repositório.
